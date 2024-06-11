@@ -65,6 +65,16 @@ def restart_button(window):
    texto = font_rb.render('RESTART', 1, white)
    window.blit(texto, (740, 120))
 
+# sorteio de palavras
+
+def draftwords(words, choosenword, end_game):
+   if end_game == True:
+      word_n = random.randint(0, len(words) - 1)
+      choosen_word = words[word_n]
+      end_game = False
+      chance = 0
+   return choosen_word, end_game
+
 while True:
    for event in pg.event.get():
       if event.type == pg.QUIT:
