@@ -1,6 +1,8 @@
 # from operator import truediv
 import pygame as pg
-import random 
+import random
+import time
+import listadepalavras 
 
 # cores do jogo
 
@@ -29,12 +31,14 @@ words = ["CANETA"
          "PAPEL"]
 
 tries = ['', '-']
-choosen_word = ''
+choosen_word = " "
 cam_word  = ''
 end_game = True
 chance = 0
 letter = ' '
 click_last_status = False
+
+# tela de início # def telainicio(window, )
 
 # funcão de desenho da forca
 
@@ -67,7 +71,7 @@ def restart_button(window):
 
 # sorteio de palavras
 
-def draftwords(words, choosenword, end_game):
+def draftwords(words, choosen_word, end_game):
    if end_game == True:
       word_n = random.randint(0, len(words) - 1)
       choosen_word = words[word_n]
@@ -88,5 +92,7 @@ while True:
    
    hangman_draw(window, chance)
    restart_button(window)
+   choosen_word, end_game = draftwords(words, choosen_word, end_game)
+   print(choosen_word)
    
    pg.display.update()
