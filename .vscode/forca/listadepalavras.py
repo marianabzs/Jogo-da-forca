@@ -9,7 +9,7 @@ palavras_medias = ["amor", "alegria", "tristeza", "raiva", "medo", "esperança",
                    "anjo", "demônio", "paraíso", "inferno", "alma", "corpo", "espírito", "mente", "coração"]
 
 # Lista de palavras difíceis
-palavras_dificil = ["supercalifragilisticexpialidocious", "pneumonoultramicroscopicsilicovolcanoconiosis", "hippopotomonstrosesquipedaliophobia",
-                    "onomatopeia", "xenofobia", "eufemismo", "cacofonia", "anacronismo", "pleonasmo", "sofisma",
-                    "paralogismo", "apocalipse", "epifania", "catarse", "simbiose", "sinestesia", "idiosincrasia", "serendipity",
-                    "nihilismo", "solipsismo", "abstruso", "prolixo", "hermético", "inefável", "incompreensível"]
+palavras_dificil = ["onomatopeia", "xenofobia", "eufemismo", "cacofonia", "inefável", "incompreensível",
+                     "anacronismo", "pleonasmo", "sofisma", "paralogismo", "apocalipse", "epifania", "catarse",
+                     "simbiose", "sinestesia", "idiosincrasia", "serendipity", "nihilismo", "solipsismo", 
+                     "abstruso", "prolixo", "hermético"]

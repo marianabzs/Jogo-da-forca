@@ -24,10 +24,10 @@ font_rb = pg.font.SysFont("Courier New", 30)
 
 # vetor com palavras
 
-words = ["CANETA"
-         "BORRACHA"
-         "TINTA" 
-         "PINCEL"
+words = ["CANETA",
+         "BORRACHA",
+         "TINTA",
+         "PINCEL",
          "PAPEL"]
 
 tries = ['', '-']
@@ -79,6 +79,13 @@ def draftwords(words, choosen_word, end_game):
       chance = 0
    return choosen_word, end_game
 
+def camuf_words(choosen_word, camword, end_game):
+   cam_word = choosen_word 
+   for n in range(len(cam_word)):
+      if cam_word[n:n + 1] not in tries:
+         cam_word = cam_word.replace(cam_word[n], '#') 
+   return cam_word
+
 while True:
    for event in pg.event.get():
       if event.type == pg.QUIT:
@@ -93,6 +100,7 @@ while True:
    hangman_draw(window, chance)
    restart_button(window)
    choosen_word, end_game = draftwords(words, choosen_word, end_game)
-   print(choosen_word)
+   cam_word = camuf_words(choosen_word, cam_word, end_game)
+   print(choosen_word, cam_word)
    
    pg.display.update()
