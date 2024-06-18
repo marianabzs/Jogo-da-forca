@@ -34,7 +34,7 @@ tries = ['', '-']
 choosen_word = " "
 cam_word  = ''
 end_game = True
-chance = 0
+chance = -1
 letter = ' '
 click_last_status = False
 
@@ -69,6 +69,25 @@ def restart_button(window):
    texto = font_rb.render('RESTART', 1, white)
    window.blit(texto, (740, 120))
 
+# funcionamento do botao restart
+
+def botaorestart(cam_word, end_game, chance, letter, tries, click_last_status, click, x, y):
+   count = 0
+   limit = len(cam_word)
+   for n in range(len(cam_word)):
+      if cam_word[n] != "#":
+         count += 1
+      if count == limit and click_last_status == False and click[0] == True:
+         print("Ok")
+         if x >= 700 and x <= 900 and y >= 100 and y <= 165:
+            tries = [' ', '-']
+            end_game = True 
+            chance = 0
+            letter = ' '
+      
+      return end_game, chance, tries, letter
+
+
 # sorteio de palavras
 
 def draftwords(words, choosen_word, end_game):
@@ -79,12 +98,33 @@ def draftwords(words, choosen_word, end_game):
       chance = 0
    return choosen_word, end_game
 
-def camuf_words(choosen_word, camword, end_game):
+# camuflando a palavra
+
+def camuf_words(choosen_word, cam_word, end_game):
    cam_word = choosen_word 
    for n in range(len(cam_word)):
       if cam_word[n:n + 1] not in tries:
          cam_word = cam_word.replace(cam_word[n], '#') 
    return cam_word
+
+# advinhando a letra
+
+def guessingletter(tries, choosen_word, letter, chance):
+   if letter not in tries:
+      tries.append(letter)
+      if letter not in choosen_word:
+         chance += 1
+   elif letter in tries:
+      pass
+   return tries, chance
+
+# desenhando a palavra
+
+def worddraw(cam_word, window):
+   word = font.render(cam_word, 1, black)
+   window.blit(word, (200, 500))
+
+# game over
 
 while True:
    for event in pg.event.get():
@@ -93,14 +133,32 @@ while True:
          quit()
       if event.type == pg.KEYDOWN:
          letter = str(pg.key.name(event.key)).upper()
-         print(letter)
+
+   # var. de posicao do mouse
+
+   mouse = pg.mouse.get_pos()
+   mouse_position_x = mouse[0]
+   mouse_position_y = mouse[1]
+
+   # var. do click do mouse
+
+   click = pg.mouse.get_pressed()
          
    # jogo
    
    hangman_draw(window, chance)
    restart_button(window)
    choosen_word, end_game = draftwords(words, choosen_word, end_game)
-   cam_word = camuf_words(choosen_word, cam_word, end_game)
-   print(choosen_word, cam_word)
-   
+   cam_word = camuf_words(choosen_word, cam_word, tries)
+   tries, chance = guessingletter(tries, choosen_word, letter, chance)
+   worddraw(window, cam_word)
+   end_game, chance, tries, letter = botaorestart(cam_word, end_game, chance, letter, tries, click_last_status, click, mouse_position_x, mouse_position_y)
+
+   # click last status
+
+   if click[0] == True:
+      click_last_status = True
+   else:
+      click_last_status = False
+
    pg.display.update()
