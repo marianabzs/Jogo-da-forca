@@ -63,8 +63,8 @@ def hangman_draw(window, chance):
 # desenho do restart button
 
 def restart_button(window):
-   pg.draw.rect(window, black, (700, 100, 200, 65))
-   texto = font_rb.render('RESTART', 1, white)
+   pg.draw.rect(window, black, (700, 100, 230, 70))
+   texto = font_rb.render('RECOMEÇAR', 1, white)
    window.blit(texto, (740, 120))
 
 # sorteio de palavras
@@ -118,9 +118,25 @@ def botaorestart(cam_word, end_game, chance, letter, tries, click_last_status, c
             end_game = True 
             chance = 0
             letter = ' '
+            draftwords(words, choosen_word, end_game) # palavra sorteada novamente
       
    return end_game, chance, tries, letter
 
+# tela de game-over
+
+def gameover(window):
+   if chance == 6:
+      pg.draw.rect(window, black, (0, 0, 1000, 600))
+      texto = font.render('GAME OVER', 1, white)
+      window.blit(texto, (350, 250))
+      time.sleep(0.5)
+   
+      
+# tela de restart
+
+''' def restartfinal(window):
+   pg.draw.rect(window, black, (0, 0, 1000, 600))     
+   texto = font.render('RESTART', 1, white)'''
 
 while True:
    for event in pg.event.get():
@@ -149,6 +165,7 @@ while True:
    tries, chance = guessingletter(tries, choosen_word, letter, chance)
    worddraw(window, cam_word)
    end_game, chance, tries, letter = botaorestart(cam_word, end_game, chance, letter, tries, click_last_status, click, mouse_position_x, mouse_position_y)
+   gameover(window)
 
    # click last status
 
