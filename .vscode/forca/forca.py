@@ -31,14 +31,12 @@ words = ["CANETA",
          "PAPEL"]
 
 tries = ['', '-']
-choosen_word = " "
+choosen_word = ''
 cam_word  = ''
 end_game = True
 chance = -1
 letter = ' '
 click_last_status = False
-
-# tela de início # def telainicio(window, )
 
 # funcão de desenho da forca
 
@@ -68,25 +66,6 @@ def restart_button(window):
    pg.draw.rect(window, black, (700, 100, 200, 65))
    texto = font_rb.render('RESTART', 1, white)
    window.blit(texto, (740, 120))
-
-# funcionamento do botao restart
-
-def botaorestart(cam_word, end_game, chance, letter, tries, click_last_status, click, x, y):
-   count = 0
-   limit = len(cam_word)
-   for n in range(len(cam_word)):
-      if cam_word[n] != "#":
-         count += 1
-      if count == limit and click_last_status == False and click[0] == True:
-         print("Ok")
-         if x >= 700 and x <= 900 and y >= 100 and y <= 165:
-            tries = [' ', '-']
-            end_game = True 
-            chance = 0
-            letter = ' '
-      
-      return end_game, chance, tries, letter
-
 
 # sorteio de palavras
 
@@ -120,11 +99,28 @@ def guessingletter(tries, choosen_word, letter, chance):
 
 # desenhando a palavra
 
-def worddraw(cam_word, window):
+def worddraw( window, cam_word):
    word = font.render(cam_word, 1, black)
    window.blit(word, (200, 500))
 
-# game over
+# funcionamento do botao restart
+
+def botaorestart(cam_word, end_game, chance, letter, tries, click_last_status, click, x, y):
+   count = 0
+   limit = len(cam_word)
+   for n in range(len(cam_word)):
+      if cam_word[n] != '#':
+         count += 1
+   if count == limit and click_last_status == False and click[0] == True:
+         print("Ok")
+         if x >= 700 and x <= 900 and y >= 100 and y <= 165:
+            tries = [' ', '-']
+            end_game = True 
+            chance = 0
+            letter = ' '
+      
+   return end_game, chance, tries, letter
+
 
 while True:
    for event in pg.event.get():
