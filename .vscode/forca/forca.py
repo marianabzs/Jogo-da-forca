@@ -1,17 +1,19 @@
-# from operator import truediv
-import pygame as pg
-import random
-import time
-import listadepalavras 
+import pygame as pg # importando a biblioteca do pygame
+import random # usado para aleatorizar as palavras
+import time # usando em time.sleep
+import listadepalavras # lista de palavras p dificuldade (ainda nao emplementado) 
 
 # cores do jogo
 
 white = (255, 255, 255)
 black = (0, 0, 0)
+red = (255, 0, 0)
+green = (0, 255, 0)
 
 # setup da tela do jogo
 
-window = pg.display.set_mode((1000, 600))
+window = pg.display.set_mode((1000, 600)) # tamanho da janela
+pg.display.set_caption('Jogo da Forca') # nome da janela
 
 # fonte do jogo
 
@@ -22,13 +24,12 @@ pg.font.init()
 font = pg.font.SysFont("Courier New", 50) # fonte, pixels
 font_rb = pg.font.SysFont("Courier New", 30)
 
-# vetor com palavras
+# vetor com palavras para o jogo 
 
-words = ["CANETA",
-         "BORRACHA",
-         "TINTA",
-         "PINCEL",
-         "PAPEL"]
+words = ['CANETA', 'CARRO', 'CASA', 'COMPUTADOR', 'FILHO', 'JOVEM', 'LIVRO', 'PINCEL', 'MESA', 'MORTE',
+          'TERRA', 'AGUA', 'AR', 'FOGO', 'CHAPEU', 'DIA', 'ESPIRITO', 'ESCURO', 'FILHO', 'INIMIGO', 'INFERNO']
+
+# variáveis globais
 
 tries = ['', '-']
 choosen_word = ''
@@ -105,7 +106,7 @@ def worddraw( window, cam_word):
 
 # funcionamento do botao restart
 
-def botaorestart(cam_word, end_game, chance, letter, tries, click_last_status, click, x, y):
+def restart(cam_word, end_game, chance, letter, tries, click_last_status, click, x, y):
    count = 0
    limit = len(cam_word)
    for n in range(len(cam_word)):
@@ -126,30 +127,59 @@ def botaorestart(cam_word, end_game, chance, letter, tries, click_last_status, c
 
 def gameover(window):
    if chance == 6:
-      pg.draw.rect(window, black, (0, 0, 1000, 600))
-      texto = font.render('GAME OVER', 1, white)
-      window.blit(texto, (350, 250))
       time.sleep(0.5)
-   
-      
-# tela de restart
+      pg.draw.rect(window, black, (0, 0, 1000, 600))
+      texto = font.render('GAME OVER', 5, red)
+      window.blit(texto, (350, 250))
 
-''' def restartfinal(window):
-   pg.draw.rect(window, black, (0, 0, 1000, 600))     
-   texto = font.render('RESTART', 1, white)'''
+# lista de letras para imprimir na tela 
+
+def draw_tries(tries):
+   font = pg.font.Font(None, 36)
+   text = font.render('Tentativas de letras: ' + str(tries) + ':', True, white)
+   window.blit(text, (20, 20))
+
+   for index, letter in enumerate(tries):
+        text = font.render(letter, True, red)
+        window.blit(text, (20 + index * 30, 60))
+
+# função para verificar se o ganhador ganhou
+
+def check_win(tries, cam_word):
+   for letter in choosen_word:
+      if letter in choosen_word:
+         if letter not in tries:
+            return False
+   return True
+
+# tela de vitória
+
+def victory(window):
+   victorytext = font.render('VOCÊ GANHOU!', 1, True, green)
+   revealing = font.render('A palavra era: ' + choosen_word, 1, True, green) # revelando a palavra
+   window.blit(victorytext, (50, 50))
+   window.blit(revealing, (50, 100))
+
+# jogo
 
 while True:
    for event in pg.event.get():
       if event.type == pg.QUIT:
          pg.quit()
          quit()
-      if event.type == pg.KEYDOWN:
+      if event.type == pg.KEYDOWN and event.unicode.isalpha():  # apenas letras do alfabeto
          letter = str(pg.key.name(event.key)).upper()
+      if event.type == pg.MOUSEBUTTONDOWN:
+         click = pg.mouse.get_pressed()
+         click_last_status = True
+         
+
+   window.fill(white)
 
    # var. de posicao do mouse
 
    mouse = pg.mouse.get_pos()
-   mouse_position_x = mouse[0]
+   mouse_position_x = mouse[0] 
    mouse_position_y = mouse[1]
 
    # var. do click do mouse
@@ -164,8 +194,19 @@ while True:
    cam_word = camuf_words(choosen_word, cam_word, tries)
    tries, chance = guessingletter(tries, choosen_word, letter, chance)
    worddraw(window, cam_word)
-   end_game, chance, tries, letter = botaorestart(cam_word, end_game, chance, letter, tries, click_last_status, click, mouse_position_x, mouse_position_y)
-   gameover(window)
+   end_game, chance, tries, letter = restart(cam_word, end_game, chance, letter, tries, click_last_status, click, mouse_position_x, mouse_position_y)
+   draw_tries(tries)
+   
+   # vitoria
+
+   if check_win(tries, cam_word):
+      victory(window)
+
+   # game-over
+
+   if chance >= 6:
+      end_game = True
+      gameover(window)
 
    # click last status
 
