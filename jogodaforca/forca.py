@@ -33,7 +33,7 @@ end_game = True
 chance = -1
 letra = ' '
 click_last_status = False
-palavras = ['CANETA', 'CARRO', 'CASA', 'FILHO', 'JOVEM', 'LIVRO', 'PINCEL', 'MESA', 'MORTE', 'TERRA', 'AGUA', 'AR', 'FOGO', 'DIA']
+palavras = ['CANETA', 'BOLO', 'CARRO', 'CASA', 'FILHO', 'JOVEM', 'LIVRO', 'PINCEL', 'MESA', 'MORTE', 'TERRA', 'AGUA', 'AR', 'FOGO', 'DIA']
 
 # função de menu com dificuldades
 
@@ -41,21 +41,23 @@ def tela_dificuldades(janela):
    global end_game, palavras
    while True:
       janela.fill(branco)
-      texto = font.render('Escolha uma dificuldade:', 1, True, branco)
-      janela.blit(texto, (200, 100))
+      jogo = font.render('JOGO DA FORCA', 1, preto)
+      opcao = font_rb.render('Escolha uma dificuldade:', 1, preto)
+      janela.blit(jogo, (300, 50))
+      janela.blit(opcao, (290, 190))
 
       # botoes para dificuldade
 
       facil_btn = pg.draw.rect(janela, preto, (350, 250, 240, 60))
-      facil_texto = font.render('FACIL', 1, branco)
-      janela.blit(facil_texto, (370, 250))
+      facil_texto = font.render('FÁCIL', 1, branco)
+      janela.blit(facil_texto, (395, 250))
 
       medio_btn = pg.draw.rect(janela, preto, (350, 350, 240, 60))
-      medio_texto = font.render('MEDIO', 1, branco)
-      janela.blit(medio_texto, (370, 350))
+      medio_texto = font.render('MÉDIO', 1, branco)
+      janela.blit(medio_texto, (395, 350))
 
       dificil_btn = pg.draw.rect(janela, preto, (350, 450, 240, 60))
-      dificil_texto = font.render('DIFICIL', 1, branco)
+      dificil_texto = font.render('DIFÍCIL', 1, branco)
       janela.blit(dificil_texto, (370, 450))
 
       for event in pg.event.get():
@@ -65,15 +67,16 @@ def tela_dificuldades(janela):
          if event.type == pg.MOUSEBUTTONDOWN:
             if facil_btn.collidepoint(event.pos):
                palavras = listadepalavras.palavras_faceis
-               end_game = False
+               end_game = True
+               print('facil')
                return 'facil'
             elif medio_btn.collidepoint(event.pos):
                palavras = listadepalavras.palavras_medias
-               end_game = False
+               end_game = True
                return 'medio'
             elif dificil_btn.collidepoint(event.pos):
                palavras = listadepalavras.palavras_dificeis
-               end_game = False
+               end_game = True
                return 'dificil'
 
       pg.display.update()
@@ -107,6 +110,20 @@ def botao_de_restart(janela):
    texto = font_rb.render('RECOMEÇAR', 1, branco)
    janela.blit(texto, (740, 120))
 
+# botao de restart game over
+
+def botaogameover(janela):
+   pg.draw.rect(janela, vermelho, (700, 100, 230, 70))
+   texto = font_rb.render('RECOMEÇAR', 1, preto)
+   janela.blit(texto, (740, 120))
+
+# botao de mudança de dificuldade
+
+def botao_mudanca_de_dificuldade(janela):
+   pg.draw.rect(janela, preto, (700, 200, 230, 70))
+   texto = font_rb.render('DIFICULDADE', 1, branco)
+   janela.blit(texto, (720, 220))
+
 # sorteio de palavras
 
 def palavra_sorteada(palavras, palavra_escolhida, end_game):
@@ -114,7 +131,6 @@ def palavra_sorteada(palavras, palavra_escolhida, end_game):
       palavra_n = random.randint(0, len(palavras) - 1)
       palavra_escolhida = palavras[palavra_n]
       end_game = False
-      chance = 0
    return palavra_escolhida, end_game
 
 # camuflando a palavra
@@ -162,22 +178,9 @@ def restart(palavra_camuflada, end_game, chance, letra, tentativas, click_last_s
       
    return end_game, chance, tentativas, letra
 
-# tela de game-over
-
-def gameover(janela):
-    if chance == 6:
-        pg.draw.line(janela, preto, ( 300, 350), (225, 450), 10)       
-        time.sleep(0.5)
-        pg.draw.rect(janela, preto, (0, 0, 1000, 600))
-        texto = font.render('TENTE NOVAMENTE', 5, vermelho)
-        revelando = font.render('A palavra era: ' + palavra_escolhida, 2, vermelho) # revelando a palavra
-        janela.blit(texto, (50, 50))
-        janela.blit(revelando, (60, 100))
-
-
 # lista de letras para imprimir na tela 
 
-def draw_tentativas(tentativas):
+def desenhodas_tentativas(tentativas):
    font = pg.font.Font(None, 36)
    text = font.render('Tentativas de letras: ' + str(tentativas) + ':', True, branco)
    janela.blit(text, (20, 20))
@@ -188,12 +191,23 @@ def draw_tentativas(tentativas):
 
 # função para verificar se o ganhador ganhou
 
-def check_win(tentativas, palavra_camuflada):
+def verf_vitoria(tentativas, palavra_camuflada):
    for letra in palavra_escolhida:
       if letra in palavra_escolhida:
          if letra not in tentativas:
             return False
    return True
+
+# tela de game-over
+
+def gameover(janela):
+    if chance == 6:
+        pg.draw.rect(janela, preto, (0, 0, 1000, 600))
+        texto = font.render('TENTE NOVAMENTE', 5, vermelho)
+        revelando = font.render('A palavra era: ' + palavra_escolhida, 1, vermelho) # revelando a palavra
+        janela.blit(texto, (50, 50))
+        janela.blit(revelando, (60, 100))
+        botaogameover(janela)
 
 # tela de vitória
 
@@ -207,64 +221,63 @@ def vitoria(janela):
 
 while True:
 
-  # dificuldade_escolhida = tela_dificuldades(janela)
-   #while dificuldade_escolhida:
-   for event in pg.event.get():
-      if event.type == pg.QUIT:
-         pg.quit()
-         quit()
-      if event.type == pg.KEYDOWN and event.unicode.isalpha():  # apenas letras do alfabeto, antes contava carac. especiais
-         letra = str(pg.key.name(event.key)).upper()
-      if event.type == pg.MOUSEBUTTONDOWN:
-         click = pg.mouse.get_pressed()
+   dificuldade_escolhida = tela_dificuldades(janela)
+   while dificuldade_escolhida:
+      for event in pg.event.get():
+         if event.type == pg.QUIT:
+            pg.quit()
+            quit()
+         if event.type == pg.KEYDOWN and event.unicode.isalpha():  # apenas letras do alfabeto
+            letra = str(pg.key.name(event.key)).upper()
+         if event.type == pg.MOUSEBUTTONDOWN:
+            click = pg.mouse.get_pressed()
+            click_last_status = True
+            if click[0] == True: # botao esquerdo do mouse 
+               x, y = pg.mouse.get_pos()
+               if x >= 700 and x <= 900 and y >= 100 and y <= 165:
+                  tentativas = [' ', '-']
+                  end_game = True 
+                  chance = 0
+                  letra = ' '
+                  click_last_status = True
+
+      # var. de posicao do mouse
+
+      mouse = pg.mouse.get_pos()
+      mouse_position_x = mouse[0] # botao esquerdo
+      mouse_position_y = mouse[1] # botao direito
+
+      # var. do click do mouse
+
+      click = pg.mouse.get_pressed()
+               
+      # jogo
+
+      desenhodaforca(janela, chance)
+      botao_de_restart(janela)
+      botao_mudanca_de_dificuldade(janela)
+      palavra_escolhida, end_game = palavra_sorteada(palavras, palavra_escolhida, end_game)
+      palavra_camuflada = camuf_palavras(palavra_escolhida, palavra_camuflada, tentativas)
+      tentativas, chance = advinhando_letra(tentativas, palavra_escolhida, letra, chance)
+      desenhoda_palavra(janela, palavra_camuflada)
+      desenhodas_tentativas(tentativas)
+         
+      # vitoria
+
+      if verf_vitoria(tentativas, palavra_camuflada):
+         vitoria(janela)
+
+      # game-over
+
+      if chance >= 6:
+         gameover(janela)
+         time.sleep(0.8)
+
+      # click last status
+
+      if click[0] == True:
          click_last_status = True
-         if click[0] == True: # botao esquerdo do mouse 
-            x, y = pg.mouse.get_pos()
-            if x >= 700 and x <= 900 and y >= 100 and y <= 165:
-               tentativas = [' ', '-']
-               end_game = True 
-               chance = 0
-               letra = ' '
-               click_last_status = True
+      else:
+         click_last_status = False
 
-   # var. de posicao do mouse
-
-   mouse = pg.mouse.get_pos()
-   mouse_position_x = mouse[0] # botao esquerdo
-   mouse_position_y = mouse[1] # botao direito
-
-   # var. do click do mouse
-
-   click = pg.mouse.get_pressed()
-            
-   # jogo
-
-   desenhodaforca(janela, chance)
-   botao_de_restart(janela)
-   palavra_escolhida, end_game = palavra_sorteada(palavras, palavra_escolhida, end_game)
-   palavra_camuflada = camuf_palavras(palavra_escolhida, palavra_camuflada, tentativas)
-   tentativas, chance = advinhando_letra(tentativas, palavra_escolhida, letra, chance)
-   desenhoda_palavra(janela, palavra_camuflada)
-   # end_game, chance, tentativas, letra = restart(palavra_camuflada, end_game, chance, letra, tentativas, click_last_status, click, mouse_position_x, mouse_position_y)
-   draw_tentativas(tentativas)
-      
-   # vitoria
-
-   if check_win(tentativas, palavra_camuflada):
-      vitoria(janela)
-
-   # game-over
-
-   if chance >= 6:
-      end_game = True
-      gameover(janela)
-      time.sleep(0.8)
-
-   # click last status
-
-   if click[0] == True:
-      click_last_status = True
-   else:
-      click_last_status = False
-
-   pg.display.update()
+      pg.display.update()
